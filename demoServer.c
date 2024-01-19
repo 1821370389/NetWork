@@ -30,7 +30,7 @@ enum STATUS_CODE
 int sockfd;
 int client_sockfd;
 /* 回收资源 */
-void sigHander(int sockfd,int client_sockfd)
+void sigHander()
 {
     /* todo */
 }
