@@ -69,12 +69,15 @@ int main()
     // 下面第三个NULL设置为 &timeout, 返回值ret为0时即为超时
 #endif
     
+    fd_set tmpReadfds = readfds;
+
     int maxfd = sockfd; /* 最大文件描述符 */
     /* 主循环 */
     while(1)
     {
+        tmpReadfds = readfds;
         /* 调用select函数 */
-        ret = select(maxfd + 1, &readfds, NULL, NULL, NULL);
+        ret = select(maxfd + 1, &tmpReadfds, NULL, NULL, NULL);
         if (ret < 0)
         {
             perror("select error");
@@ -82,7 +85,7 @@ int main()
         }
 
         /* 处理监听的文件描述符 */
-        if (FD_ISSET(sockfd, &readfds))     // 判断是否是监听的文件描述符
+        if (FD_ISSET(sockfd, &tmpReadfds))     // 判断是否是监听的文件描述符
         {
             /* 处理新连接 */
             struct sockaddr_in cliaddr;
@@ -104,7 +107,7 @@ int main()
         for (int idx = 3; idx <= maxfd; idx++)              // 遍历所有文件描述符,判断是否是客户端发来的数据
         {
 
-            if (idx != sockfd && FD_ISSET(idx, &readfds))   // 判断是否是客户端发来的数据
+            if (idx != sockfd && FD_ISSET(idx, &tmpReadfds))   // 判断是否是客户端发来的数据
             {
                 /* 到这里说明一定有通讯(老客户) */
                 /* 接收数据 */
