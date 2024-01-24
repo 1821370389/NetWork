@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/select.h>
+#include <ctype.h>
 
 #define PORT 8080
 #define MAX_LINE 1024
@@ -129,15 +130,17 @@ int main()
                 }
                 else
                 {
-                    printf("recv buffer: %s\n", buffer);
+                    printf("recv buffer1: %s\n", buffer);
                     
                     /* 处理数据 */
-                    toupper(buffer);
+                    for (int idx = 0; idx < readBytes; idx++)
+                    {
+                        buffer[idx] = toupper(buffer[idx]);   // 将数据转换为大写字母
+                    }
 
                     /* 发送数据 */
                     send(idx, buffer, strlen(buffer), 0);
                     memset(buffer, 0, MAX_LINE);
-                    continue;                                   // 继续循环下一个客户端连接
                 }
             }
         }
